@@ -1,6 +1,7 @@
 package com.itcode.jnidemo.utils;
 
 import android.app.Activity;
+import android.util.Log;
 import android.widget.Toast;
 
 /**
@@ -10,13 +11,20 @@ import android.widget.Toast;
  */
 
 public class ForNativeCall {
+    private static final String TAG = ForNativeCall.class.getSimpleName();
     private String name;
     private long time;
     private Activity activity;
 
+    public ForNativeCall(Activity activity) {
+        this.activity = activity;
+        Log.i(TAG,"ForNativeCall(Activity activity)");
+    }
+
     public ForNativeCall(String name, Activity activity) {
         this.name = name;
         this.activity = activity;
+        Log.i(TAG,"ForNativeCall(String name, Activity activity)");
     }
 
     public long getTime() {
@@ -24,8 +32,14 @@ public class ForNativeCall {
         return time;
     }
 
+    /**
+     * 供 Cpp 调用
+     *
+     * @param showStr
+     * @return
+     */
     private long showToast(String showStr) {
-        Toast.makeText(activity, showStr, Toast.LENGTH_SHORT).show();
+        Toast.makeText(activity, name + " :" + showStr+" "+getTime(), Toast.LENGTH_SHORT).show();
         return getTime();
     }
 }

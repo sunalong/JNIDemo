@@ -41,7 +41,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         x.view().inject(this);
         setListener();
         nativeEngine = new NativeEngine();
-
+        nativeEngine.register(this);
     }
 
     private void setListener() {

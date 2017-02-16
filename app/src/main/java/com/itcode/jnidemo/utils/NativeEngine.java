@@ -1,11 +1,18 @@
 package com.itcode.jnidemo.utils;
 
+import android.app.Activity;
+
 /**
  * Created by along on 17/2/16 11:30.
  * Email:466210864@qq.com
  */
 
 public class NativeEngine {
+    /**
+     * 用于将上下文传给 Cpp 层
+     * @param activity
+     */
+    public native void register(Activity activity);
     /**
      * 在 Cpp 中加密
      * @param rawStr 原始字符
