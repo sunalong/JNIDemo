@@ -1,19 +1,60 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout
+<LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/activity_main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:paddingBottom="@dimen/activity_vertical_margin"
-    android:paddingLeft="@dimen/activity_horizontal_margin"
-    android:paddingRight="@dimen/activity_horizontal_margin"
-    android:paddingTop="@dimen/activity_vertical_margin"
-    tools:context="com.itcode.jnidemo.MainActivity">
+    android:orientation="vertical"
+    >
 
-    <TextView
-        android:id="@+id/sample_text"
-        android:layout_width="wrap_content"
+    <LinearLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Hello World!"/>
-</RelativeLayout>
+        android:orientation="horizontal">
+
+        <Button
+            android:id="@+id/btnEncrypt"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="在Cpp中加密"/>
+
+        <EditText
+            android:id="@+id/etRawStr"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="明文"/>
+
+    </LinearLayout>
+    <EditText
+        android:id="@+id/etShowCipherText"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="展示密文:"/>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_marginTop="20dp"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <Button
+            android:id="@+id/btnDecrypt"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="在Cpp中解密"/>
+
+        <EditText
+            android:id="@+id/etdecrypt"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="密文"/>
+
+    </LinearLayout>
+    <EditText
+        android:id="@+id/etShowClearText"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="展示明文"/>
+</LinearLayout>
