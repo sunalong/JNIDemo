@@ -6,10 +6,10 @@ import android.text.TextUtils;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.TextView;
 import android.widget.Toast;
 
-import com.itcode.jnidemo.utils.NativeEngine;
+
+import com.itcode.mylibrary.NativeEngine;
 
 import org.xutils.view.annotation.ViewInject;
 import org.xutils.x;
@@ -29,10 +29,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private EditText etShowClearText;
     NativeEngine nativeEngine;
 
-    // Used to load the 'native-lib' library on application startup.
-    static {
-        System.loadLibrary("native-lib");
-    }
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
