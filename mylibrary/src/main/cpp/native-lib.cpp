@@ -10,6 +10,8 @@ jobject activityGlobal = NULL;
 
 JNIEnv *callJavaMethod(const _jstring *nameJstr, const _jstring *toastJstr);
 
+JNIEnv *callJavaMethodStr(const _jstring *nameJstr, const _jstring *toastJstr);
+
 extern "C"
 JNIEXPORT jint JNI_OnLoad(JavaVM *vm, void *reserved) {
     vmGlobal = reinterpret_cast<JavaVM *>(vm);
@@ -66,6 +68,7 @@ Java_com_itcode_mylibrary_NativeEngine_decryptInCpp(JNIEnv *env, jobject instanc
     jstring nameJstr = env->NewStringUTF("decryptInCpp");
     jstring toastJstr = env->NewStringUTF("cpp解密成功");
     callJavaMethod(nameJstr, toastJstr);
+    callJavaMethodStr(nameJstr, toastJstr);
     return env->NewStringUTF(returnValue.c_str());
 }
 
@@ -73,7 +76,7 @@ JNIEnv *callJavaMethod(const _jstring *nameJstr, const _jstring *toastJstr) {
     //找到 class 类
     JNIEnv *env;
     env = envGlobal;
-    jclass classId = envGlobal->FindClass("com/itcode/jnidemo/utils/ForNativeCall");
+    jclass classId = envGlobal->FindClass("com/itcode/mylibrary/ForNativeCall");
     //获取类的构造函数
     jmethodID constructorMethodId = envGlobal->GetMethodID(classId, "<init>", "(Ljava/lang/String;Landroid/app/Activity;)V");
     //使用构造函数创建对象
@@ -82,5 +85,24 @@ JNIEnv *callJavaMethod(const _jstring *nameJstr, const _jstring *toastJstr) {
     jmethodID showToastId = envGlobal->GetMethodID(classId, "showToast", "(Ljava/lang/String;)J");
     //对象调用方法
     envGlobal->CallLongMethod(forNativeCallObj, showToastId, toastJstr);
+    return env;
+}
+
+JNIEnv *callJavaMethodStr(const _jstring *nameJstr, const _jstring *toastJstr) {
+    //找到 class 类
+    JNIEnv *env;
+    env = envGlobal;
+    jclass classId = envGlobal->FindClass("com/itcode/mylibrary/ForNativeCall");
+    //获取类的构造函数
+    jmethodID constructorMethodId = envGlobal->GetMethodID(classId, "<init>", "(Ljava/lang/String;Landroid/app/Activity;)V");
+    //使用构造函数创建对象
+    jobject forNativeCallObj = envGlobal->NewObject(classId, constructorMethodId, nameJstr, activityGlobal);
+    //获取要调用的方法
+    jmethodID getLoginUserInfoId = envGlobal->GetMethodID(classId, "getLoginUserInfo", "()Ljava/lang/String;");
+    //对象调用方法
+    jstring retJstr = (jstring) envGlobal->CallObjectMethod(forNativeCallObj, getLoginUserInfoId);
+    const char *retChar = envGlobal->GetStringUTFChars(retJstr, 0);
+    LOGD("【jni_log】callJavaMethodStr:%s", retChar);
+    envGlobal->ReleaseStringUTFChars(retJstr, retChar);
     return env;
 }

@@ -42,4 +42,9 @@ public class ForNativeCall {
         Toast.makeText(activity, name + " :" + showStr+" "+getTime(), Toast.LENGTH_SHORT).show();
         return getTime();
     }
+    public String getLoginUserInfo(){
+        String str =  "getLoginUserInfo,Time:"+System.currentTimeMillis();
+        Log.i(TAG,"Java:"+str);
+        return str;
+    }
 }
