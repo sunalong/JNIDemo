@@ -6,12 +6,10 @@
 #define JNIDEMO_CPPCALLJAVA_H
 
 #include "jniHelper.h"
-
 class CppCallJava {
 public:
-    JNIEnv *callJavaMethod(JNIEnv *jniEnv,const _jstring *nameJstr, const _jstring *toastJstr,jobject activity);
+    JNIEnv *callJavaMethod(JNIEnv *jniEnv, const _jstring *nameJstr, const _jstring *toastJstr, jobject activity);
 
-    JNIEnv *callJavaMethodStr(JNIEnv *jniEnv,const _jstring *nameJstr, const _jstring *toastJstr,jobject activity);
+    JNIEnv *callJavaMethodStr(JNIEnv *jniEnv, const _jstring *nameJstr, const _jstring *toastJstr, jobject activity);
 };
-
 #endif //JNIDEMO_CPPCALLJAVA_H

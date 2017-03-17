@@ -1,5 +1,6 @@
 package com.itcode.jnidemo;
 
+import android.os.Build;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.TextUtils;
@@ -27,8 +28,13 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private EditText etdecrypt;
     @ViewInject(R.id.etShowClearText)
     private EditText etShowClearText;
+    @ViewInject(R.id.btnGetDeviceInfo)
+    private Button btnGetDeviceInfo;
+    @ViewInject(R.id.etDeviceModel)
+    private EditText etDeviceModel;
+    @ViewInject(R.id.etShowDeviceInfo)
+    private EditText etShowDeviceInfo;
     NativeEngine nativeEngine;
-
 
 
     @Override
@@ -44,11 +50,20 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private void setListener() {
         btnEncrypt.setOnClickListener(this);
         btnDecrypt.setOnClickListener(this);
+        btnGetDeviceInfo.setOnClickListener(this);
     }
 
+                String deviceModel;
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
+            case R.id.btnGetDeviceInfo:
+                if(TextUtils.isEmpty(etDeviceModel.getText())){
+                    deviceModel = Build.MODEL;
+                }
+                    deviceModel = etDeviceModel.getText().toString().trim();
+                nativeEngine.getDeviceInfo(deviceModel,5000);
+                break;
             case R.id.btnEncrypt:
                 if (TextUtils.isEmpty(etRawStr.getText())) {
                     Toast.makeText(this, "请输入要加密的字符串", Toast.LENGTH_SHORT).show();

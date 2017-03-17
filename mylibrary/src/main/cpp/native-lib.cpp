@@ -1,11 +1,25 @@
 #include "jniHelper.h"
 #include "cppCallJava.h"
-
+#include "cppNetUtils.h"
 JNIEnv *envGlobal = NULL;
 jobject activityGlobal = NULL;
 
-
 extern "C" {
+void callback(ResponseType responseType,ResponseCode responseCode,const char* dataPtr){
+    LOGD("【jni_log】callback: responseType:%d,responseCode:%d,dataStr:%s",responseType,responseCode,dataPtr);
+
+}
+
+JNIEXPORT jboolean JNICALL
+Java_com_itcode_mylibrary_NativeEngine_getDeviceInfo(JNIEnv *env, jobject instance, jstring deviceModel_, jint timeout) {
+    const char *deviceModel = env->GetStringUTFChars(deviceModel_, 0);
+    CppNetUtils cppNetUtils;
+   bool retBool =  cppNetUtils.getDeviceInfo(callback,deviceModel,timeout);
+    LOGD("【jni_log】native-lib:getDeviceInfo: deviceModel:%s, timeout:%d,retBool:%d",deviceModel,timeout,retBool);
+    env->ReleaseStringUTFChars(deviceModel_, deviceModel);
+    return retBool;
+}
+
 JNIEXPORT void JNICALL
 Java_com_itcode_mylibrary_NativeEngine_register(JNIEnv *env, jobject instance, jobject activity) {
     envGlobal = env;
