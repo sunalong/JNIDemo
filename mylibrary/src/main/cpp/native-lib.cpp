@@ -1,13 +1,14 @@
 #include "jniHelper.h"
 #include "cppCallJava.h"
 #include "cppNetUtils.h"
-JNIEnv *envGlobal = NULL;
+JNIEnv *envTemp = NULL;
 jobject activityGlobal = NULL;
 
 extern "C" {
 void callback(ResponseType responseType,ResponseCode responseCode,const char* dataPtr){
-    LOGD("【jni_log】callback: responseType:%d,responseCode:%d,dataStr:%s",responseType,responseCode,dataPtr);
-
+    LOGD("【jni_log】callback: responseType:%d,responseCode:%d,dataStr:%s,threadId:%d",responseType,responseCode,dataPtr,std::this_thread::get_id());
+    CppCallJava cppCallJava;
+    cppCallJava.retDataToJava(responseType,responseCode,dataPtr);
 }
 
 JNIEXPORT jboolean JNICALL
@@ -15,16 +16,18 @@ Java_com_itcode_mylibrary_NativeEngine_getDeviceInfo(JNIEnv *env, jobject instan
     const char *deviceModel = env->GetStringUTFChars(deviceModel_, 0);
     CppNetUtils cppNetUtils;
    bool retBool =  cppNetUtils.getDeviceInfo(callback,deviceModel,timeout);
-    LOGD("【jni_log】native-lib:getDeviceInfo: deviceModel:%s, timeout:%d,retBool:%d",deviceModel,timeout,retBool);
     env->ReleaseStringUTFChars(deviceModel_, deviceModel);
     return retBool;
 }
 
 JNIEXPORT void JNICALL
 Java_com_itcode_mylibrary_NativeEngine_register(JNIEnv *env, jobject instance, jobject activity) {
-    envGlobal = env;
 //    activityGlobal = activity;//注意与下一句的区别，报错为：E/dalvikvm: JNI ERROR (app bug): attempt to use stale local reference 0x20d00021
     activityGlobal = env->NewGlobalRef(reinterpret_cast<jobject>(activity));
+
+    jclass tempClassId =  env->FindClass("com/itcode/mylibrary/ForNativeCall");
+    jclass paramsClass =  reinterpret_cast<jclass>(env->NewGlobalRef(tempClassId));//不使用 NewGlobalRef 报错：jclass is an invalid local reference
+    JNIHelper::setForNativeCallClassId(paramsClass);
 }
 
 extern "C"

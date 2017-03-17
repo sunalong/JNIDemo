@@ -15,7 +15,9 @@ public class ForNativeCall {
     private String name;
     private long time;
     private Activity activity;
-
+    public ForNativeCall(){
+        Log.i(TAG,"ForNativeCall()");
+    }
     public ForNativeCall(Activity activity) {
         this.activity = activity;
         Log.i(TAG,"ForNativeCall(Activity activity)");
@@ -46,5 +48,15 @@ public class ForNativeCall {
         String str =  "getLoginUserInfo,Time:"+System.currentTimeMillis();
         Log.i(TAG,"Java:"+str);
         return str;
+    }
+
+    /**
+     * 仅供 cpp 调用，用于将 cpp 的数据传到 java
+     * @param type
+     * @param code
+     * @param dataStr
+     */
+    private void receiveDataFromC(int type,int code,String dataStr){
+        Log.i(TAG,"receiveDataFromC: type:"+type+",code:"+code+",dataStr:"+dataStr);
     }
 }

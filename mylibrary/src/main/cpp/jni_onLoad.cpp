@@ -9,7 +9,7 @@
 #include "jniHelper.h"
 extern "C" {
 jint JNIEXPORT JNICALL  JNI_OnLoad(JavaVM *vm, void *reserved) {
-    LOGD("【jni_log】JNI_OnLoad");
+    LOGD("JNI_OnLoad  threadId:%d", std::this_thread::get_id());
     JNIHelper::setJvmGlobal(vm);//保存全局的 javaVM,以便后来使用
     return JNI_VERSION_1_4;
 }
