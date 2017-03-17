@@ -4,7 +4,7 @@
 
 cmake_minimum_required(VERSION 3.4.1)
 
-file(GLOB jni_srcs "src/main/cpp/*cpp" "src/main/cpp/*c")
+file(GLOB jni_srcs "src/main/cpp/*.cpp" "src/main/cpp/*.c")
 
 add_library( # Sets the name of the library.
              native-lib
@@ -23,6 +23,7 @@ add_library( # Sets the name of the library.
 # you want to add. CMake verifies that the library exists before
 # completing its build.
 
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11")#让编译器支持 c++11 的语法
 find_library( # Sets the name of the path variable.
               log-lib
 

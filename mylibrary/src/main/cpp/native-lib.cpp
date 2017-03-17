@@ -1,10 +1,5 @@
-#include <jni.h>
-#include <string>
-#include <android/log.h>
+#include "jniHelper.h"
 
-#define LOG_TAG "System.out.c"
-#define LOGD(...) __android_log_print(ANDROID_LOG_INFO, LOG_TAG, __VA_ARGS__)
-JavaVM *vmGlobal = NULL;
 JNIEnv *envGlobal = NULL;
 jobject activityGlobal = NULL;
 
@@ -13,19 +8,11 @@ JNIEnv *callJavaMethod(const _jstring *nameJstr, const _jstring *toastJstr);
 JNIEnv *callJavaMethodStr(const _jstring *nameJstr, const _jstring *toastJstr);
 
 extern "C"
-JNIEXPORT jint JNI_OnLoad(JavaVM *vm, void *reserved) {
-    vmGlobal = reinterpret_cast<JavaVM *>(vm);
-    return JNI_VERSION_1_4;
-}
-
-extern "C"
 JNIEXPORT void JNICALL
 Java_com_itcode_mylibrary_NativeEngine_register(JNIEnv *env, jobject instance, jobject activity) {
-//    envGlobal = reinterpret_cast<JNIEnv *>(env);
     envGlobal = env;
 //    activityGlobal = activity;//注意与下一句的区别，报错为：E/dalvikvm: JNI ERROR (app bug): attempt to use stale local reference 0x20d00021
     activityGlobal = env->NewGlobalRef(reinterpret_cast<jobject>(activity));
-
 }
 
 extern "C"
@@ -41,7 +28,7 @@ Java_com_itcode_mylibrary_NativeEngine_encryptInCpp(JNIEnv *env, jobject instanc
     }
     env->ReleaseStringUTFChars(rawStr_, rawStr);
 
-    if (vmGlobal->GetEnv((void **) &env, JNI_VERSION_1_4) != JNI_OK) {
+    if (JNIHelper::getJvmGlobal()->GetEnv((void **) &env, JNI_VERSION_1_4) != JNI_OK) {
         LOGD("【jni_log】vmGlobal->GetEnv((void**)&env,JNI_VERSION_1_4)!=JNI_OK");
     }
     jstring nameJstr = env->NewStringUTF("encryptInCpp");
