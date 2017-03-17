@@ -1,13 +1,11 @@
 #include "jniHelper.h"
+#include "cppCallJava.h"
 
 JNIEnv *envGlobal = NULL;
 jobject activityGlobal = NULL;
 
-JNIEnv *callJavaMethod(const _jstring *nameJstr, const _jstring *toastJstr);
 
-JNIEnv *callJavaMethodStr(const _jstring *nameJstr, const _jstring *toastJstr);
-
-extern "C"
+extern "C" {
 JNIEXPORT void JNICALL
 Java_com_itcode_mylibrary_NativeEngine_register(JNIEnv *env, jobject instance, jobject activity) {
     envGlobal = env;
@@ -34,10 +32,10 @@ Java_com_itcode_mylibrary_NativeEngine_encryptInCpp(JNIEnv *env, jobject instanc
     jstring nameJstr = env->NewStringUTF("encryptInCpp");
     jstring toastJstr = env->NewStringUTF("cpp加密成功");
     //调用 Java 的方法
-    env = callJavaMethod(nameJstr, toastJstr);
+    CppCallJava cppCallJava;
+    env = cppCallJava.callJavaMethod(env, nameJstr, toastJstr, activityGlobal);
     return env->NewStringUTF(retValue);
 }
-
 
 extern "C"
 JNIEXPORT jstring JNICALL
@@ -54,42 +52,9 @@ Java_com_itcode_mylibrary_NativeEngine_decryptInCpp(JNIEnv *env, jobject instanc
     //调用 Java 的方法
     jstring nameJstr = env->NewStringUTF("decryptInCpp");
     jstring toastJstr = env->NewStringUTF("cpp解密成功");
-    callJavaMethod(nameJstr, toastJstr);
-    callJavaMethodStr(nameJstr, toastJstr);
+    CppCallJava cppCallJava;
+    cppCallJava.callJavaMethod(env, nameJstr, toastJstr, activityGlobal);
+    cppCallJava.callJavaMethodStr(env, nameJstr, toastJstr, activityGlobal);
     return env->NewStringUTF(returnValue.c_str());
 }
-
-JNIEnv *callJavaMethod(const _jstring *nameJstr, const _jstring *toastJstr) {
-    //找到 class 类
-    JNIEnv *env;
-    env = envGlobal;
-    jclass classId = envGlobal->FindClass("com/itcode/mylibrary/ForNativeCall");
-    //获取类的构造函数
-    jmethodID constructorMethodId = envGlobal->GetMethodID(classId, "<init>", "(Ljava/lang/String;Landroid/app/Activity;)V");
-    //使用构造函数创建对象
-    jobject forNativeCallObj = envGlobal->NewObject(classId, constructorMethodId, nameJstr, activityGlobal);
-    //获取要调用的方法
-    jmethodID showToastId = envGlobal->GetMethodID(classId, "showToast", "(Ljava/lang/String;)J");
-    //对象调用方法
-    envGlobal->CallLongMethod(forNativeCallObj, showToastId, toastJstr);
-    return env;
-}
-
-JNIEnv *callJavaMethodStr(const _jstring *nameJstr, const _jstring *toastJstr) {
-    //找到 class 类
-    JNIEnv *env;
-    env = envGlobal;
-    jclass classId = envGlobal->FindClass("com/itcode/mylibrary/ForNativeCall");
-    //获取类的构造函数
-    jmethodID constructorMethodId = envGlobal->GetMethodID(classId, "<init>", "(Ljava/lang/String;Landroid/app/Activity;)V");
-    //使用构造函数创建对象
-    jobject forNativeCallObj = envGlobal->NewObject(classId, constructorMethodId, nameJstr, activityGlobal);
-    //获取要调用的方法
-    jmethodID getLoginUserInfoId = envGlobal->GetMethodID(classId, "getLoginUserInfo", "()Ljava/lang/String;");
-    //对象调用方法
-    jstring retJstr = (jstring) envGlobal->CallObjectMethod(forNativeCallObj, getLoginUserInfoId);
-    const char *retChar = envGlobal->GetStringUTFChars(retJstr, 0);
-    LOGD("【jni_log】callJavaMethodStr:%s", retChar);
-    envGlobal->ReleaseStringUTFChars(retJstr, retChar);
-    return env;
 }
